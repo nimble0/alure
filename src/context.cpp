@@ -1582,24 +1582,31 @@ void ContextImpl::freeEffect(EffectImpl *effect)
 }
 
 
-DECL_THUNK0(SourceGroup, Context, createSourceGroup,)
-SourceGroup ContextImpl::createSourceGroup()
+DECL_THUNK1(SourceGroup, Context, createSourceGroup,, String)
+SourceGroup ContextImpl::createSourceGroup(String id)
 {
-    auto srcgroup = MakeUnique<SourceGroupImpl>(*this);
-    auto iter = std::lower_bound(mSourceGroups.begin(), mSourceGroups.end(), srcgroup);
+    if(mSourceGroups.find(id) != mSourceGroups.end())
+        throw std::invalid_argument("SourceGroup with that id already exists");
 
-    iter = mSourceGroups.insert(iter, std::move(srcgroup));
-    return SourceGroup(iter->get());
+    auto srcgroup = MakeUnique<SourceGroupImpl>(*this, id);
+    SourceGroup result(srcgroup.get());
+    mSourceGroups[id] = std::move(srcgroup);
+    return result;
+}
+
+DECL_THUNK1(SourceGroup, Context, getSourceGroup,, String)
+SourceGroup ContextImpl::getSourceGroup(String id)
+{
+    auto iter = mSourceGroups.find(id);
+    if(iter == mSourceGroups.end())
+        throw std::invalid_argument("SourceGroup with that id does not exist");
+
+    return SourceGroup(iter->second.get());
 }
 
 void ContextImpl::freeSourceGroup(SourceGroupImpl *group)
 {
-    auto iter = std::lower_bound(mSourceGroups.begin(), mSourceGroups.end(), group,
-        [](const UniquePtr<SourceGroupImpl> &lhs, SourceGroupImpl *rhs) -> bool
-        { return lhs.get() < rhs; }
-    );
-    if(iter != mSourceGroups.end() && iter->get() == group)
-        mSourceGroups.erase(iter);
+    mSourceGroups.erase(group->getId());
 }
 
 

@@ -294,6 +294,7 @@ void SourceGroupImpl::destroy()
 }
 
 
+DECL_THUNK0(String, SourceGroup, getId, const)
 DECL_THUNK0(SourceGroup, SourceGroup, getParentGroup, const)
 DECL_THUNK0(ALfloat, SourceGroup, getGain, const)
 DECL_THUNK0(ALfloat, SourceGroup, getPitch, const)

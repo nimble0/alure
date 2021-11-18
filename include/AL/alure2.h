@@ -804,7 +804,8 @@ public:
 
     Effect createEffect();
 
-    SourceGroup createSourceGroup();
+    SourceGroup createSourceGroup(String id);
+    SourceGroup getSourceGroup(String id);
 
     /** Sets the doppler factor to apply to all source doppler calculations. */
     void setDopplerFactor(ALfloat factor);
@@ -1305,6 +1306,8 @@ class ALURE_API SourceGroup {
     MAKE_PIMPL(SourceGroup, SourceGroupImpl)
 
 public:
+    String getId() const;
+
     /**
      * Adds this source group as a subgroup of the specified source group. This
      * method will throw an exception if this group is being added to a group

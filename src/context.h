@@ -128,7 +128,7 @@ private:
     DeviceImpl &mDevice;
     FutureBufferListT mFutureBuffers;
     BufferListT mBuffers;
-    Vector<UniquePtr<SourceGroupImpl>> mSourceGroups;
+    std::unordered_map<String, UniquePtr<SourceGroupImpl>> mSourceGroups;
     Vector<UniquePtr<AuxiliaryEffectSlotImpl>> mEffectSlots;
     Vector<UniquePtr<EffectImpl>> mEffects;
     std::deque<SourceImpl> mAllSources;
@@ -258,6 +258,7 @@ public:
     void removeStreamNoLock(SourceImpl *source);
 
     void freeSource(SourceImpl *source) { mFreeSources.push_back(source); }
+    void freeSourceGroup(String name);
     void freeSourceGroup(SourceGroupImpl *group);
     void freeEffectSlot(AuxiliaryEffectSlotImpl *slot);
     void freeEffect(EffectImpl *effect);
@@ -315,7 +316,8 @@ public:
 
     Effect createEffect();
 
-    SourceGroup createSourceGroup();
+    SourceGroup createSourceGroup(String id);
+    SourceGroup getSourceGroup(String id);
 
     void setDopplerFactor(ALfloat factor);
 
