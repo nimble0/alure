@@ -22,6 +22,10 @@ find_package(Threads)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
+if((MSVC) AND (MSVC_VERSION GREATER_EQUAL 1914))
+    add_compile_options("/Zc:__cplusplus")
+endif()
+
 set(CXX_FLAGS )
 
 option(ALURE_DISABLE_RTTI "Disable run-time type information" OFF)
